@@ -1,5 +1,6 @@
 {
   "tasks":{
-    "test": "deno test --unstable --allow-read --allow-env --allow-write"
+    "test": "deno test --unstable --allow-read --allow-env --allow-write",
+    "dev": "deno run --unstable --allow-read --allow-env --allow-net --allow-write src/index.ts"
   }
 }

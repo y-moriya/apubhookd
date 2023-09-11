@@ -16,4 +16,4 @@ app.route("/hooks", hooks);
 
 app.showRoutes();
 
-export default app;
+Deno.serve(app.fetch);
