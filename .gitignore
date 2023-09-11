@@ -2,4 +2,4 @@
 wrangler.toml
 .wrangler/
 .env
-src/test/private.pem
+data

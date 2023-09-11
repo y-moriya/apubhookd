@@ -5,6 +5,7 @@ import {
   importPrivateKey,
 } from "./utils.ts";
 import { assertEquals } from "https://deno.land/std@0.194.0/testing/asserts.ts";
+import "https://deno.land/x/dotenv@v3.2.2/load.ts";
 
 // test for accountToActor
 Deno.test("accountToActor", () => {
@@ -33,14 +34,14 @@ Deno.test("accountToActor", () => {
 
 // test for importPrivateKey
 Deno.test("importPrivateKey", async () => {
-  const pem = (await Deno.readTextFile("src/test/private.pem")).trim();
+  const pem = Deno.env.get("PRIVATE_KEY")!.trim();
   const privateKey = await importPrivateKey(pem);
   assertEquals(privateKey.type, "private");
 });
 
 Deno.test("getServerInfo", async () => {
   const env = {
-    PRIVATE_KEY: (await Deno.readTextFile("src/test/private.pem")).trim(),
+    PRIVATE_KEY: Deno.env.get("PRIVATE_KEY")!.trim(),
   };
   const c = {
     req: {
@@ -52,6 +53,6 @@ Deno.test("getServerInfo", async () => {
   assertEquals(serverInfo.host, "example.com");
   assertEquals(
     serverInfo.publicKeyPem,
-    await getPublicKeyPem(c.env.PRIVATE_KEY),
+    await getPublicKeyPem(Deno.env.get("PRIVATE_KEY")!),
   );
 });

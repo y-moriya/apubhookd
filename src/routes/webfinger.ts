@@ -2,7 +2,7 @@ import { Hono } from "../deps.ts";
 import { getActorUrl } from "../apub/actor.ts";
 import { getServerInfo } from "../utils.ts";
 import { Env } from "../types.ts";
-import { getD1Database } from "../db.ts";
+import { getKVDatabase } from "../db.ts";
 
 const app = new Hono<Env>();
 
@@ -17,7 +17,7 @@ app.get("/", async (c) => {
   const server = await getServerInfo(c);
   if (host !== server.host) return c.notFound();
 
-  const db = getD1Database(c);
+  const db = await getKVDatabase(c);
   const account = await db.getAccount(username);
   if (!account || username !== account.username) return c.notFound();
 

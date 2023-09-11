@@ -16,7 +16,7 @@ export function accountToActor(
 
 export async function getServerInfo(c: Context<Env>): Promise<ServerInfo> {
   const host = new URL(c.req.url).hostname;
-  const publicKeyPem = await getPublicKeyPem(c.env.PRIVATE_KEY);
+  const publicKeyPem = await getPublicKeyPem(Deno.env.get("PRIVATE_KEY")!);
   return {
     host,
     publicKeyPem,

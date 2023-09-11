@@ -37,3 +37,4 @@ export {
   ZodError,
   ZodSchema,
 };
+export * as dotenv from "https://deno.land/x/dotenv@v3.2.2/load.ts";

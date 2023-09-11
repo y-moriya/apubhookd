@@ -5,12 +5,12 @@ import { APubHookAccount, Env, Follower, Post } from "./types.ts";
 import { UrlString } from "./apub/common.ts";
 
 export interface IDatabase {
-  getAccount(username: string): Promise<APubHookAccount>;
-  getAccountBySecretHookPath(secretHookPath: string): Promise<APubHookAccount>;
+  getAccount(username: string): Promise<APubHookAccount | undefined>;
+  getAccountBySecretHookPath(secretHookPath: string): Promise<APubHookAccount | undefined>;
   getFollowers(username: string): Promise<Follower[]>;
   acceptFollow(followerUrl: UrlString, followeeUsername: string): Promise<void>;
   removeFollow(followerUrl: UrlString, followeeUsername: string): Promise<void>;
-  getPost(postId: string): Promise<Post>;
+  getPost(postId: string): Promise<Post | undefined>;
   createPost(postId: string, username: string, body: string): Promise<void>;
   deletePost(postId: string): Promise<void>;
 }
@@ -40,17 +40,17 @@ export class DenoKvDatabase implements IDatabase {
     });
   }
 
-  getAccount(username: string): Promise<APubHookAccount> {
+  getAccount(username: string): Promise<APubHookAccount | undefined> {
     return this.db.accounts.findByPrimaryIndex("username", username).then(
       (res) => {
-        return res!.value;
+        return res?.value;
       },
     );
   }
-  getAccountBySecretHookPath(secretHookPath: string): Promise<APubHookAccount> {
+  getAccountBySecretHookPath(secretHookPath: string): Promise<APubHookAccount | undefined> {
     return this.db.accounts.findByPrimaryIndex("secretHookPath", secretHookPath)
       .then((res) => {
-        return res!.value;
+        return res?.value;
       });
   }
   getFollowers(username: string): Promise<Follower[]> {
@@ -77,9 +77,9 @@ export class DenoKvDatabase implements IDatabase {
       console.log(res);
     });
   }
-  getPost(postId: string): Promise<Post> {
+  getPost(postId: string): Promise<Post | undefined> {
     return this.db.posts.findByPrimaryIndex("id", postId).then((res) => {
-      return res!.value;
+      return res?.value;
     });
   }
   createPost(postId: string, username: string, body: string): Promise<void> {

@@ -2,7 +2,7 @@ import { Hono } from "../deps.ts";
 import { Env } from "../types.ts";
 import { accountToActor, getServerInfo, importPrivateKey } from "../utils.ts";
 import { actorJSON, followersJSON } from "../apub/actor.ts";
-import { getD1Database } from "../db.ts";
+import { getKVDatabase } from "../db.ts";
 import { acceptFollow, InboxMessage } from "../apub/follow.ts";
 
 const app = new Hono<Env>();
@@ -12,7 +12,7 @@ app.get(":atusername", async (c) => {
   if (!atUsername.startsWith("@")) return c.notFound();
   const username = atUsername.substring(1);
   const server = await getServerInfo(c);
-  const db = getD1Database(c);
+  const db = await getKVDatabase(c);
   const account = await db.getAccount(username);
   if (!account) return c.notFound();
 
@@ -29,7 +29,7 @@ app.post(":atusername/inbox", async (c) => {
   const atUsername = c.req.param("atusername");
   if (!atUsername.startsWith("@")) return c.notFound();
   const username = atUsername.substring(1);
-  const db = getD1Database(c);
+  const db = await getKVDatabase(c);
 
   if (!c.req.header("Content-Type")?.includes("application/activity+json")) {
     return c.body(null, 400);
@@ -41,7 +41,7 @@ app.post(":atusername/inbox", async (c) => {
     if (!followee) return c.body(null, 404);
 
     const server = await getServerInfo(c);
-    const privateKey = await importPrivateKey(c.env.PRIVATE_KEY);
+    const privateKey = await importPrivateKey(Deno.env.get("PRIVATE_KEY")!);
     await acceptFollow(
       message,
       accountToActor(server, followee),
@@ -70,7 +70,7 @@ app.get(":atusername/followers", async (c) => {
   const atUsername = c.req.param("atusername");
   if (!atUsername.startsWith("@")) return c.notFound();
   const username = atUsername.substring(1);
-  const db = getD1Database(c);
+  const db = await getKVDatabase(c);
 
   if (!c.req.header("Accept")?.includes("application/activity+json")) {
     return c.body(null, 400);
@@ -88,7 +88,7 @@ app.get(":atusername/s/:postId", async (c) => {
   const atUsername = c.req.param("atusername");
   if (!atUsername.startsWith("@")) return c.notFound();
   const username = atUsername.substring(1);
-  const db = getD1Database(c);
+  const db = await getKVDatabase(c);
   const account = await db.getAccount(username);
   if (!account) return c.notFound();
 

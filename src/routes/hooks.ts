@@ -2,7 +2,7 @@ import { Hono, z } from "../deps.ts";
 import { zValidator } from "../lib/zValidator.ts";
 import { accountToActor, getServerInfo, importPrivateKey } from "../utils.ts";
 import { Env } from "../types.ts";
-import { getD1Database } from "../db.ts";
+import { getKVDatabase } from "../db.ts";
 import { fetchRemoteActor, getActorUrl } from "../apub/actor.ts";
 import { createNote } from "../apub/note.ts";
 
@@ -19,13 +19,13 @@ app.post(
     const hookPath = c.req.param("secretHookPath");
     const payload = c.req.valid("json");
 
-    const db = getD1Database(c);
+    const db = await getKVDatabase(c);
     const account = await db.getAccountBySecretHookPath(hookPath);
     if (!account) return c.notFound();
 
     const server = await getServerInfo(c);
     const accountActor = accountToActor(server, account);
-    const privateKey = await importPrivateKey(c.env.PRIVATE_KEY);
+    const privateKey = await importPrivateKey(Deno.env.get("PRIVATE_KEY")!);
     const postId = crypto.randomUUID();
 
     const followers = await db.getFollowers(account.username);
