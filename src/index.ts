@@ -1,21 +1,19 @@
-import { Hono } from 'hono'
-import { serveStatic } from 'hono/cloudflare-workers'
-import { logger } from 'hono/logger'
-import webfinger from './routes/webfinger'
-import user from './routes/user'
-import hooks from './routes/hooks'
+import { Hono, logger, serveStatic } from "./deps.ts";
+import webfinger from "./routes/webfinger.ts";
+import user from "./routes/user.ts";
+import hooks from "./routes/hooks.ts";
 
-const app = new Hono()
+const app = new Hono();
 
-app.use('*', logger())
+app.use("*", logger());
 
-app.get('/static/*', serveStatic({ root: './' }))
+app.get("/static/*", serveStatic({ root: "./" }));
 
-app.get('/', (c) => c.text('apubhook'))
-app.route('/.well-known/webfinger', webfinger)
-app.route('/', user)
-app.route('/hooks', hooks)
+app.get("/", (c) => c.text("apubhook"));
+app.route("/.well-known/webfinger", webfinger);
+app.route("/", user);
+app.route("/hooks", hooks);
 
-app.showRoutes()
+app.showRoutes();
 
-export default app
+export default app;

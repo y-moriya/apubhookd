@@ -1,26 +1,29 @@
-import { UrlString } from "./apub/common"
+import { UrlString } from "./apub/common.ts";
+import type { Model } from "./deps.ts";
 
 export type Env = {
   Bindings: {
-    DB: D1Database
-    PRIVATE_KEY: string
-  }
+    DB: any;
+    PRIVATE_KEY: string;
+  };
+};
+
+export interface APubHookAccount extends Model {
+  username: string;
+  displayName: string;
+  secretHookPath: string;
+  iconUrl: string;
+  iconMime: string;
 }
 
-export type APubHookAccount = {
-  username: string
-  displayName: string
-  secretHookPath: string
-  iconUrl: string
-  iconMime: string
+export interface Follower extends Model {
+  follower: UrlString;
+  followee: UrlString;
 }
 
-export type Follower = {
-  follower: UrlString
-}
-
-export type Post = {
-  id: string
-  body: string
-  createdAt: Date
+export interface Post extends Model {
+  id: string;
+  authorUserName: string;
+  body: string;
+  createdAt: Date;
 }

@@ -1,18 +1,21 @@
-import { APubHookAccount } from "../types";
-import { ServerInfo, UrlString } from "./common";
+import { APubHookAccount } from "../types.ts";
+import { ServerInfo, UrlString } from "./common.ts";
 
 export type Actor = {
-  preferredUsername: string
-  inbox: UrlString
-}
+  preferredUsername: string;
+  inbox: UrlString;
+};
 
 export function actorJSON(server: ServerInfo, actor: APubHookAccount): Actor {
   const baseUrl = getActorUrl(server, actor.username);
   // ref: https://scrapbox.io/activitypub/Actor
   return {
-    '@context': ['https://www.w3.org/ns/activitystreams', 'https://w3id.org/security/v1'],
+    "@context": [
+      "https://www.w3.org/ns/activitystreams",
+      "https://w3id.org/security/v1",
+    ],
     id: baseUrl,
-    type: 'Person',
+    type: "Person",
     inbox: `${baseUrl}/inbox`,
     discoverable: true,
     followers: `${baseUrl}/followers`,
@@ -21,47 +24,52 @@ export function actorJSON(server: ServerInfo, actor: APubHookAccount): Actor {
     url: baseUrl,
     publicKey: {
       id: `${baseUrl}#main-key`,
-      type: 'Key',
+      type: "Key",
       owner: baseUrl,
       publicKeyPem: server.publicKeyPem,
     },
     icon: {
-      type: 'Image',
+      type: "Image",
       mediaType: actor.iconMime,
       url: convertRelativeUrl(server, actor.iconUrl),
     },
-  } as Actor
+  } as Actor;
 }
 
 export function getActorUrl(server: ServerInfo, username: string) {
-  return `https://${server.host}/@${username}`
+  return `https://${server.host}/@${username}`;
 }
 
 function convertRelativeUrl(server: ServerInfo, url: string) {
-  return url.startsWith('http://') || url.startsWith('https://') ? url :
-    `https://${server.host}${url}`
+  return url.startsWith("http://") || url.startsWith("https://")
+    ? url
+    : `https://${server.host}${url}`;
 }
 
 export async function fetchRemoteActor(actorUrl: UrlString): Promise<Actor> {
   const res = await fetch(actorUrl, {
-    method: 'GET',
-    headers: { Accept: 'application/activity+json' },
-  })
-  return await res.json() as Actor
+    method: "GET",
+    headers: { Accept: "application/activity+json" },
+  });
+  return await res.json() as Actor;
 }
 
-export function followersJSON(server: ServerInfo, username: string, followerUrls: string[]) {
+export function followersJSON(
+  server: ServerInfo,
+  username: string,
+  followerUrls: string[],
+) {
   const baseUrl = getActorUrl(server, username);
   return {
-    '@context': 'https://www.w3.org/ns/activitystreams',
+    "@context": "https://www.w3.org/ns/activitystreams",
     id: `${baseUrl}/followers`,
-    type: 'OrderedCollection',
+    type: "OrderedCollection",
     first: {
-      type: 'OrderedCollectionPage',
+      type: "OrderedCollectionPage",
       totalItems: followerUrls.length,
       partOf: `${baseUrl}/followers`,
       orderedItems: followerUrls,
       id: `${baseUrl}/followers?page=1`,
     },
-  }
+  };
 }

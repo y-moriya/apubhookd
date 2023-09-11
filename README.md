@@ -1,12 +1,17 @@
-# APubHook
+# APubHookD
+
+Deno-based fork of APubHook.
 
 Incoming WebHook-like server for ActivityPub.
 
-You can post messages to Fediverse like Incoming WebHook in Slack with the command `curl -X POST -d '{"text": "hello"}' ...` 
+You can post messages to Fediverse like Incoming WebHook in Slack with the
+command `curl -X POST -d '{"text": "hello"}' ...`
 
 ## Configuration
 
-APubHook works on [Cloudflare Workers](https://workers.cloudflare.com/); use [Wrangler](https://developers.cloudflare.com/workers/wrangler/) to configure and deploy.
+APubHook works on [Cloudflare Workers](https://workers.cloudflare.com/); use
+[Wrangler](https://developers.cloudflare.com/workers/wrangler/) to configure and
+deploy.
 
 ```
 cp wrangler.sample.toml wrangler.toml
@@ -36,18 +41,20 @@ pnpm run deploy
 
 ## Usage
 
-APubHook can host multiple accounts on a single server.
-Accounts are managed in the `accounts` table on the D1 Database.
-For example, the following command creates a BOT account named 'testbot'.
-`secretHookPath` is a secret string used in the WebHook URL.
+APubHook can host multiple accounts on a single server. Accounts are managed in
+the `accounts` table on the D1 Database. For example, the following command
+creates a BOT account named 'testbot'. `secretHookPath` is a secret string used
+in the WebHook URL.
 
 ```sh
 pnpm wrangler d1 execute apubhook --command "insert or replace into accounts(username, displayName, secretHookPath, iconUrl, iconMime) VALUES('testbot', 'Test BOT', 'secret-path-example', '/static/icon.png', 'image/png')"
 ```
 
-Then you can follow a account: `@testbot@apubhook.<USERNAME>.workers.dev` on Fediverse (Alternatively, you could use a custom domain for Workers).
+Then you can follow a account: `@testbot@apubhook.<USERNAME>.workers.dev` on
+Fediverse (Alternatively, you could use a custom domain for Workers).
 
-And you can post messages with HTTP POST request with JSON payload to `/hooks/secret-path-example`.
+And you can post messages with HTTP POST request with JSON payload to
+`/hooks/secret-path-example`.
 
 ```sh
 # Sending 'hello' to Fediverse!
@@ -58,21 +65,18 @@ You can see the post on Fediverse!
 
 ![](./example.webp)
 
-
 ## License
 
 MIT
 
-And using a lot of code in Matchbox and inspired by Minidon and Express ActivityPub Server.
+And using a lot of code in Matchbox and inspired by Minidon and Express
+ActivityPub Server.
 
-Minidon
-https://github.com/yusukebe/minidon
-Copyright (c) 2023 Yusuke Wada. Licensed under the MIT license.
+Minidon https://github.com/yusukebe/minidon Copyright (c) 2023 Yusuke Wada.
+Licensed under the MIT license.
 
-Matchbox
-https://gitlab.com/acefed/matchbox
-Copyright (c) 2022 Acefed MIT License
+Matchbox https://gitlab.com/acefed/matchbox Copyright (c) 2022 Acefed MIT
+License
 
-Express ActivityPub Server
-https://github.com/dariusk/express-activitypub
+Express ActivityPub Server https://github.com/dariusk/express-activitypub
 Copyright (c) 2018 Darius Kazemi. Licensed under the MIT license.

@@ -1,3 +1,5 @@
 /node_modules
 wrangler.toml
 .wrangler/
+.env
+src/test/private.pem
