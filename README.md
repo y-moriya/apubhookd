@@ -21,8 +21,9 @@ You can also use the value as "Secret variables" in Deno Deploy.
 
 ## Deploy
 
-First, create a project in Deno Deploy. Set the Environment Variables `PRIVATE_KEY` and `CREATE_ACCOUNT_ENDPOINT_UUID`.
-Issue a Deploy Token and deploy using [deployctl](https://deno.com/deploy/docs/deployctl).
+First, create a project in Deno Deploy. Set the Environment Variables
+`PRIVATE_KEY` and `CREATE_ACCOUNT_ENDPOINT_UUID`. Issue a Deploy Token and
+deploy using [deployctl](https://deno.com/deploy/docs/deployctl).
 
 ```sh
 deployctl deploy --project=PROJECT_NAME --token=DEPLOY_TOKEN src/index.ts
@@ -31,10 +32,11 @@ deployctl deploy --project=PROJECT_NAME --token=DEPLOY_TOKEN src/index.ts
 ## Usage
 
 APubHookD can host multiple accounts on a single server. Accounts are managed in
-Deno KV. To create an account, the API endpoint is `/api/createAccount/CREATE_ACCOUNT_ENDPOINT_UUID`,
-where CREATE_ACCOUNT_ENDPOINT_UUID is configured in the .env file.
-For example, the following command creates a BOT account named 'testbot'.
-secretHookPath is a secret string used in the WebHook URL.
+Deno KV. To create an account, the API endpoint is
+`/api/createAccount/CREATE_ACCOUNT_ENDPOINT_UUID`, where
+CREATE_ACCOUNT_ENDPOINT_UUID is configured in the .env file. For example, the
+following command creates a BOT account named 'testbot'. secretHookPath is a
+secret string used in the WebHook URL.
 
 ```sh
 curl -X POST -d '{"username": "testbot", "displayName": "Test BOT", "secretHookPath": "secret-path-example", "iconUrl": "/static/icon.png", "iconMime": "image/png"}' "https://<PROJECT_NAME>.deno.dev/api/createAccount/<CREATE_ACCOUNT_ENDPOINT_UUID>"
