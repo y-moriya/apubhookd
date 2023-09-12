@@ -1,6 +1,6 @@
 # APubHookD
 
-Deno-based fork of APubHook.
+Deno-based fork of [APubHook](https://github.com/castaneai/apubhook).
 
 Incoming WebHook-like server for ActivityPub.
 
@@ -22,7 +22,7 @@ You can also use the value as "Secret variables" in Deno Deploy.
 ## Deploy
 
 First, create a project in Deno Deploy. Set the Environment Variables `PRIVATE_KEY` and `CREATE_ACCOUNT_ENDPOINT_UUID`.
-Issue a Deploy Token and deploy using deployctl.
+Issue a Deploy Token and deploy using [deployctl](https://deno.com/deploy/docs/deployctl).
 
 ```sh
 deployctl deploy --project=PROJECT_NAME --token=DEPLOY_TOKEN src/index.ts
