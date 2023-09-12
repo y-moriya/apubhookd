@@ -8,7 +8,7 @@ const app = new Hono();
 
 app.use("*", logger());
 
-app.get("/static/*", serveStatic({ root: "./" }));
+app.use("/static/*", serveStatic({ root: "./" }));
 
 app.get("/", (c) => c.text("apubhook"));
 app.route("/.well-known/webfinger", webfinger);
