@@ -4,7 +4,6 @@ import { logger } from "https://deno.land/x/hono@v3.5.8/middleware/logger/index.
 import { z, ZodError, ZodSchema } from "https://deno.land/x/zod@v3.22.2/mod.ts";
 import {
   Context,
-  Env,
   MiddlewareHandler,
   TypedResponse,
   ValidationTargets,
@@ -19,7 +18,6 @@ import { indexableCollection, kvdex } from "https://deno.land/x/kvdex/mod.ts";
 export type {
   Context,
   DB,
-  Env,
   MiddlewareHandler,
   Model,
   SchemaDefinition,

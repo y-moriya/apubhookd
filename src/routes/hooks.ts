@@ -9,7 +9,7 @@ import { createNote } from "../apub/note.ts";
 const app = new Hono<Env>();
 
 const requestSchema = z.object({
-  text: z.string().nonempty(),
+  text: z.string().min(1),
 });
 
 app.post(

@@ -5,8 +5,11 @@ import { APubHookAccount, Env, Follower, Post } from "./types.ts";
 import { UrlString } from "./apub/common.ts";
 
 export interface IDatabase {
+  createAccount(account: APubHookAccount): Promise<void>;
   getAccount(username: string): Promise<APubHookAccount | undefined>;
-  getAccountBySecretHookPath(secretHookPath: string): Promise<APubHookAccount | undefined>;
+  getAccountBySecretHookPath(
+    secretHookPath: string,
+  ): Promise<APubHookAccount | undefined>;
   getFollowers(username: string): Promise<Follower[]>;
   acceptFollow(followerUrl: UrlString, followeeUsername: string): Promise<void>;
   removeFollow(followerUrl: UrlString, followeeUsername: string): Promise<void>;
@@ -40,6 +43,14 @@ export class DenoKvDatabase implements IDatabase {
     });
   }
 
+  createAccount(account: APubHookAccount): Promise<void> {
+    return this.db.accounts.add(account).then((res) => {
+      if (!res.ok) {
+        throw new Error("Failed to create account");
+      }
+    });
+  }
+
   getAccount(username: string): Promise<APubHookAccount | undefined> {
     return this.db.accounts.findByPrimaryIndex("username", username).then(
       (res) => {
@@ -47,7 +58,9 @@ export class DenoKvDatabase implements IDatabase {
       },
     );
   }
-  getAccountBySecretHookPath(secretHookPath: string): Promise<APubHookAccount | undefined> {
+  getAccountBySecretHookPath(
+    secretHookPath: string,
+  ): Promise<APubHookAccount | undefined> {
     return this.db.accounts.findByPrimaryIndex("secretHookPath", secretHookPath)
       .then((res) => {
         return res?.value;
@@ -65,7 +78,9 @@ export class DenoKvDatabase implements IDatabase {
       follower: followerUrl,
       followee: followeeUsername,
     }).then((res) => {
-      console.log(res);
+      if (!res.ok) {
+        throw new Error("Failed to accept follow");
+      }
     });
   }
   removeFollow(followerUrl: string, followeeUsername: string): Promise<void> {
@@ -89,7 +104,9 @@ export class DenoKvDatabase implements IDatabase {
       body: body,
       createdAt: new Date(),
     }).then((res) => {
-      console.log(res);
+      if (!res.ok) {
+        throw new Error("Failed to create post");
+      }
     });
   }
   deletePost(postId: string): Promise<void> {
