@@ -22,7 +22,7 @@ You can also use the value as "Secret variables" in Deno Deploy.
 ## Deploy
 
 ```
-deployctl deploy ...
+deployctl deploy --project=PROJECT_NAME src/index.ts
 ```
 
 ---
@@ -32,23 +32,21 @@ deployctl deploy ...
 ## Usage
 
 APubHookD can host multiple accounts on a single server. Accounts are managed in
-the `accounts` table on the D1 Database. For example, the following command
-creates a BOT account named 'testbot'. `secretHookPath` is a secret string used
-in the WebHook URL.
+Deno KV. To create an account, the API endpoint is /api/createAccount/UUID, where UUID is configured in the .env file. For example, the following command creates a BOT account named 'testbot'.
+secretHookPath is a secret string used in the WebHook URL.
 
 ```sh
-pnpm wrangler d1 execute apubhook --command "insert or replace into accounts(username, displayName, secretHookPath, iconUrl, iconMime) VALUES('testbot', 'Test BOT', 'secret-path-example', '/static/icon.png', 'image/png')"
+curl -X POST -d '{"username": "testbot", "displayName": "Test BOT", "secretHookPath": "secret-path-example", "iconUrl": "/static/icon.png", "iconMime": "image/png"}' "https://<PROJECT_NAME>.deno.dev/api/createAccount/<UUID>"
 ```
 
-Then you can follow a account: `@testbot@apubhook.<USERNAME>.workers.dev` on
-Fediverse (Alternatively, you could use a custom domain for Workers).
+Then you can follow a account: `@testbot@<PROJECT_NAME>.deno.dev` on Fediverse.
 
 And you can post messages with HTTP POST request with JSON payload to
 `/hooks/secret-path-example`.
 
 ```sh
 # Sending 'hello' to Fediverse!
-curl -X POST -d '{"text": "hello"}' "https://apubhook.<USERNAME>.workers.dev/hooks/secret-path-example"
+curl -X POST -d '{"text": "hello"}' "https://<PROJECT_NAME>.deno.dev/hooks/secret-path-example"
 ```
 
 You can see the post on Fediverse!
